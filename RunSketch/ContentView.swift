@@ -4,11 +4,13 @@
 //
 //  Created by Satvik Kharbanda on 13/7/2026.
 //
-
+import CoreLocation
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var locationManager = LocationManager()
     @State private var isRunning = false
+
     var body: some View {
         VStack(spacing: 20) {
             
@@ -25,11 +27,17 @@ struct ContentView: View {
             
             if isRunning {
                 Text("Run in Progress!!")
+                Text("GPS Points: \(locationManager.locationCount)")
                 
             }
             
             Button(isRunning ? "Stop Run" : "Start Run") {
-                isRunning.toggle()
+                if isRunning {
+                    isRunning = false
+                } else {
+                    locationManager.startRun()
+                    isRunning = true
+                }
                 
             }
             .buttonStyle(.borderedProminent)
