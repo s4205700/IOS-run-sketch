@@ -4,7 +4,7 @@
 //
 //  Created by Satvik Kharbanda on 13/7/2026.
 //
-
+import SwiftData
 import SwiftUI
 
 @main
@@ -13,5 +13,6 @@ struct RunSketchApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: RunModel.self)
     }
 }

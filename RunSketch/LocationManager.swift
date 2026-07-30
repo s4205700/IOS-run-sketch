@@ -8,7 +8,12 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var locationCount = 0
     @Published var currentDistance: CLLocationDistance = 0
     @Published var elapsedTime: TimeInterval = 0
+    @Published var runState: RunState = .notStarted
     private var timer: Timer?
+    private var pauseTime: Date?
+    private var totalPausedTime: TimeInterval = 0
+    
+    
     
     override init() {
         super.init()
@@ -24,9 +29,12 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         currentRun = Run(
             startTime: Date(),
             endTime: nil,
+            totalPausedTime: 0,
             locations: []
-            
         )
+
+        runState = .running
+
         locationManager.startUpdatingLocation()
     }
     
@@ -39,14 +47,48 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
-    func stopRun() {
-        currentRun?.endTime = Date()
-        
+    func pauseRun() {
+
+        runState = .paused
+
+        pauseTime = Date()
+
         locationManager.stopUpdatingLocation()
-        
+
         timer?.invalidate()
         timer = nil
     }
+    
+    func resumeRun() {
+
+        runState = .running
+
+        if let pauseTime = pauseTime {
+
+            let pauseDuration = Date().timeIntervalSince(pauseTime)
+
+            currentRun?.totalPausedTime += pauseDuration
+
+            self.pauseTime = nil
+        }
+
+        locationManager.startUpdatingLocation()
+
+        startTimer()
+    }
+    
+    func finishRun() {
+
+        runState = .finished
+
+        currentRun?.endTime = Date()
+
+        locationManager.stopUpdatingLocation()
+
+        timer?.invalidate()
+        timer = nil
+    }
+    
     func locationManager(
         _ manager: CLLocationManager,
         didUpdateLocations locations: [CLLocation]

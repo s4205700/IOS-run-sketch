@@ -7,9 +7,17 @@
 import Foundation
 import CoreLocation
 
+enum RunState {
+    case notStarted
+    case running
+    case paused
+    case finished
+}
+
 struct Run {
     var startTime: Date
     var endTime: Date?
+    var totalPausedTime: TimeInterval = 0
     var locations: [CLLocation]
     
     var distance: CLLocationDistance {
@@ -32,8 +40,11 @@ struct Run {
         return totalDistance
     }
     var elapsedTime: TimeInterval {
-        Date().timeIntervalSince(startTime)
-    }
+        let currentTime = endTime ?? Date()
+        return currentTime.timeIntervalSince(startTime) - totalPausedTime
+        }
+        
+    
     
     var pace: Double {
         if distance == 0 {
@@ -45,5 +56,6 @@ struct Run {
         
         return minutes/kilometres
     }
+    
 }
 
