@@ -13,14 +13,14 @@ struct RunHistoryView: View {
             
             List(runs) { run in
                 
-                VStack(alignment: .leading) {
+                RunCardView(run: run)
                     
                     Text("\(run.distance / 1000, specifier: "%.2f") km")
                     
                     Text("\(Int(run.elapsedTime / 60)) minutes")
                     
                     Text("\(run.pace, specifier: "%.2f") min/km")
-                }
+                
             }
         }
     }

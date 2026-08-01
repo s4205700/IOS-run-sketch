@@ -13,6 +13,10 @@ struct RunSketchApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: RunModel.self)
+        .modelContainer(for: [
+            RunModel.self,
+            Coordinate.self
+            
+        ])
     }
 }

@@ -36,6 +36,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         runState = .running
 
         locationManager.startUpdatingLocation()
+        
+        startTimer()
     }
     
     func startTimer() {

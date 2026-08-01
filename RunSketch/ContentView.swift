@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var locationManager = LocationManager()
     @State private var isRunning = false
+    @State private var showHistory = false
 
     var body: some View {
         NavigationStack {
@@ -25,11 +26,20 @@ struct ContentView: View {
                     isRunning = true
                 }
                 .buttonStyle(.borderedProminent)
+                
+                Button("Saved Activity") {
+                    showHistory = true
+                }
+                .buttonStyle(.bordered)
 
             }
             .padding()
             .navigationDestination(isPresented: $isRunning) {
                 RunningView(locationManager: locationManager)
+            }
+            
+            .navigationDestination(isPresented: $showHistory) {
+                RunHistoryView()
             }
         }
     }

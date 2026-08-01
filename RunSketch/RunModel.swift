@@ -9,13 +9,14 @@ class RunModel {
     var distance: Double
     var elapsedTime: Double
     var pace: Double
+    var coordinates: [Coordinate] = []
 
     init(
         startTime: Date,
         endTime: Date,
         distance: Double,
         elapsedTime: Double,
-        pace: Double
+        pace: Double,
     ) {
         self.startTime = startTime
         self.endTime = endTime
