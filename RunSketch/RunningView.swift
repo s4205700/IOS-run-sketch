@@ -6,6 +6,7 @@
 //
 import SwiftData
 import SwiftUI
+import _LocationEssentials
 
 struct RunningView: View {
     @ObservedObject var locationManager: LocationManager
@@ -43,7 +44,6 @@ struct RunningView: View {
                     
                     Button("Finish Run") {
                         locationManager.finishRun()
-                        showSummary = true
                         saveRun()
                         showSummary = true
                     }
@@ -58,11 +58,22 @@ struct RunningView: View {
         }
     }
     func saveRun() {
-
+        
         guard let run = locationManager.currentRun else {
             return
         }
-
+        var coordinates: [Coordinate] = []
+        
+        for location in run.locations {
+            
+            let coordinate = Coordinate(
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude
+            )
+            
+            coordinates.append(coordinate)
+        }
+        
         let savedRun = RunModel(
             startTime: run.startTime,
             endTime: run.endTime ?? Date(),
@@ -70,8 +81,14 @@ struct RunningView: View {
             elapsedTime: run.elapsedTime,
             pace: run.pace
         )
-
+        
+        savedRun.coordinates = coordinates
+        
+        print("Saved run coordinates count:", savedRun.coordinates.count)
+        
         modelContext.insert(savedRun)
+        
+        try? modelContext.save()
     }}
 
 #Preview {

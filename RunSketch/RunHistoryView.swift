@@ -3,7 +3,8 @@ import SwiftData
 
 struct RunHistoryView: View {
     
-    @Query private var runs: [RunModel]
+    @Query(sort: \RunModel.startTime, order: .reverse)
+    private var runs: [RunModel]
     
     var body: some View {
         VStack {
@@ -13,15 +14,14 @@ struct RunHistoryView: View {
             
             List(runs) { run in
                 
-                RunCardView(run: run)
-                    
-                    Text("\(run.distance / 1000, specifier: "%.2f") km")
-                    
-                    Text("\(Int(run.elapsedTime / 60)) minutes")
-                    
-                    Text("\(run.pace, specifier: "%.2f") min/km")
-                
-            }
+                NavigationLink{
+                    RunSummaryView(
+                        run: Run(from: run)
+                    )
+                }label: {
+                    RunCardView(run: run)
+                }
+            } 
         }
     }
 }

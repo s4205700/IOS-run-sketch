@@ -1,12 +1,36 @@
 import SwiftUI
+import CoreLocation
+
 
 struct RunSummaryView: View {
     let run: Run
     
+    var convertedCoordinates: [Coordinate] {
+
+        let coordinates = run.locations.map { location in
+
+            Coordinate(
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude
+            )
+            
+        }
+        print("Summary coordinates:", coordinates.count)
+
+        return coordinates
+    }
+    
     var body: some View {
         VStack(spacing: 20) {
             
-            Text("Run Complete")
+            RouteMapView(
+                coordinates: convertedCoordinates
+            )
+            
+            .frame(maxHeight: .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            
+            Text("RUN STATS")
                 .font(.largeTitle)
                 .bold()
             
@@ -16,10 +40,11 @@ struct RunSummaryView: View {
             Text("Time")
             Text("\(Int(run.elapsedTime / 60)) minutes")
             
-            Text("Pace")
+            Text("Avg Pace")
             Text("\(run.pace, specifier: "%.2f") min/km")
             
         }
+        .frame(maxHeight: .infinity)
     }
 }
 

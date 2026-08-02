@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		0AA717473004A72400608631 /* RunSketch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RunSketch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AA7178A301F007800608631 /* TanTrackTest.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = TanTrackTest.gpx; path = ../../../TanTrackTest.gpx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +33,7 @@
 		0AA7173E3004A72400608631 = {
 			isa = PBXGroup;
 			children = (
+				0AA7178A301F007800608631 /* TanTrackTest.gpx */,
 				0AA717493004A72400608631 /* RunSketch */,
 				0AA717483004A72400608631 /* Products */,
 			);
