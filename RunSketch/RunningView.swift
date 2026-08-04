@@ -2,94 +2,223 @@
 //  RunningView.swift
 //  RunSketch
 //
-//  Created by Satvik Kharbanda on 23/7/2026.
-//
-import SwiftData
+
 import SwiftUI
-import _LocationEssentials
+import SwiftData
 
 struct RunningView: View {
+    
     @ObservedObject var locationManager: LocationManager
+    
     @State private var showSummary = false
+    
     @Environment(\.modelContext) private var modelContext
     
+    
     var body: some View {
+        
         NavigationStack {
-            VStack(spacing: 20) {
+            
+            VStack(spacing: 30) {
                 
-                Text("Run in Progress")
-                    .font(.largeTitle)
+                // Header
                 
-                Text("Distance")
-                Text("\(locationManager.currentDistance / 1000, specifier: "%.2f") km")
-                
-                Text("Time")
-                Text("\(Int(locationManager.currentRun?.elapsedTime ?? 0)) seconds")
-                
-                
-                if locationManager.runState == .running {
+                VStack(spacing: 8) {
                     
-                    Button("Pause Run") {
-                        locationManager.pauseRun()
+                    Image(systemName: "figure.run")
+                        .font(.system(size: 55))
+                        .foregroundStyle(.blue)
+                    
+                    Text("Outdoor Run")
+                        .font(.title2)
+                        .bold()
+                    
+                    HStack {
+                        Circle()
+                            .fill(.red)
+                            .frame(width: 10, height: 10)
+                        
+                        Text("Recording...")
+                            .foregroundStyle(.secondary)
                     }
-                    .buttonStyle(.borderedProminent)
+                }
+                
+                
+                Spacer()
+                
+                
+                // Main Timer
+                
+                VStack(spacing: 5) {
                     
-                } else if locationManager.runState == .paused {
+                    Text(
+                        Formatters.formatElapsedTime(
+                            locationManager.currentRun?.elapsedTime ?? 0
+                        )
+                    )
+                    .font(.system(size: 55, weight: .bold))
                     
-                    Button("Resume Run") {
-                        locationManager.resumeRun()
+                    Text("Elapsed Time")
+                        .foregroundStyle(.secondary)
+                }
+                
+                
+                // Stats
+                
+                VStack(spacing: 15) {
+                    
+                    StatCard(
+                        title: "Distance",
+                        value: String(format: "%.2f km", locationManager.currentDistance / 1000),
+                        icon: "location.fill"
+                    )
+                    
+                    StatCard(
+                        title: "Average Pace",
+                        value: String(format: "%.2f km", locationManager.currentDistance / 1000),
+                        icon: "bolt.fill"
+                    )
+                }
+                
+                
+                Spacer()
+                
+                
+                // Buttons
+                
+                VStack(spacing: 15) {
+                    
+                    if locationManager.runState == .running {
+                        
+                        Button {
+                            locationManager.pauseRun()
+                        } label: {
+                            
+                            Label(
+                                "Pause Run",
+                                systemImage: "pause.fill"
+                            )
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(MainButtonStyle())
+                        
                     }
-                    .buttonStyle(.borderedProminent)
                     
-                    
-                    Button("Finish Run") {
-                        locationManager.finishRun()
-                        saveRun()
-                        showSummary = true
+                    else if locationManager.runState == .paused {
+                        
+                        Button {
+                            locationManager.resumeRun()
+                        } label: {
+                            
+                            Label(
+                                "Resume Run",
+                                systemImage: "play.fill"
+                            )
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(MainButtonStyle())
+                        
+                        
+                        Button {
+                            
+                            locationManager.finishRun()
+                            showSummary = true
+                            
+                        } label: {
+                            
+                            Label(
+                                "Finish Run",
+                                systemImage: "stop.fill"
+                            )
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
                     }
-                    .buttonStyle(.bordered)
                 }
             }
+            .padding()
             .navigationDestination(isPresented: $showSummary) {
+                
                 if let run = locationManager.currentRun {
+                    
                     RunSummaryView(run: run)
                 }
             }
         }
     }
-    func saveRun() {
+}
+
+
+
+// MARK: - Stat Card
+
+struct StatCard: View {
+    
+    let title: String
+    let value: String
+    let icon: String
+    
+    
+    var body: some View {
         
-        guard let run = locationManager.currentRun else {
-            return
-        }
-        var coordinates: [Coordinate] = []
-        
-        for location in run.locations {
+        HStack {
             
-            let coordinate = Coordinate(
-                latitude: location.coordinate.latitude,
-                longitude: location.coordinate.longitude
-            )
+            Image(systemName: icon)
+                .font(.title2)
+                .frame(width: 35)
             
-            coordinates.append(coordinate)
+            VStack(alignment: .leading) {
+                
+                Text(value)
+                    .font(.title2)
+                    .bold()
+                
+                Text(title)
+                    .foregroundStyle(.secondary)
+            }
+            
+            Spacer()
         }
+        .padding()
+        .background(.gray.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+
+
+// MARK: - Buttons
+
+struct MainButtonStyle: ButtonStyle {
+    
+    func makeBody(configuration: Configuration) -> some View {
         
-        let savedRun = RunModel(
-            startTime: run.startTime,
-            endTime: run.endTime ?? Date(),
-            distance: run.distance,
-            elapsedTime: run.elapsedTime,
-            pace: run.pace
-        )
+        configuration.label
+            .font(.headline)
+            .padding()
+            .background(.blue)
+            .foregroundStyle(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+    }
+}
+
+
+struct SecondaryButtonStyle: ButtonStyle {
+    
+    func makeBody(configuration: Configuration) -> some View {
         
-        savedRun.coordinates = coordinates
-        
-        print("Saved run coordinates count:", savedRun.coordinates.count)
-        
-        modelContext.insert(savedRun)
-        
-        try? modelContext.save()
-    }}
+        configuration.label
+            .font(.headline)
+            .padding()
+            .background(.red.opacity(0.85))
+            .foregroundStyle(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+    }
+}
+
+
 
 #Preview {
     RunningView(

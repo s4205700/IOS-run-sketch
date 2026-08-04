@@ -38,7 +38,9 @@ struct RunSummaryView: View {
             Text("\(run.distance / 1000, specifier: "%.2f") km")
             
             Text("Time")
-            Text("\(Int(run.elapsedTime / 60)) minutes")
+            Text(
+                Formatters.formatElapsedTime(run.elapsedTime)
+            )
             
             Text("Avg Pace")
             Text("\(run.pace, specifier: "%.2f") min/km")

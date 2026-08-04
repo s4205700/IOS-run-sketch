@@ -1,49 +1,54 @@
-import CoreLocation
 import SwiftUI
 
 struct ContentView: View {
+
     @StateObject private var locationManager = LocationManager()
-    @State private var isRunning = false
-    @State private var showHistory = false
 
     var body: some View {
+
         NavigationStack {
-            VStack(spacing: 20) {
+
+            VStack(spacing: 25) {
 
                 Image(systemName: "figure.run")
                     .font(.system(size: 60))
 
-                Text("RunSketch")
+                Text("HOPPA")
                     .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .bold()
 
-                Text("Turning every run into a visual story.")
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
+                NavigationLink {
 
-                Button("Start Run") {
-                    locationManager.startRun()
-                    isRunning = true
+                    RecordRunView(
+                        locationManager: locationManager
+                    )
+
+                } label: {
+
+                    Label("Record Activity", systemImage: "record.circle.fill")
+                        .frame(maxWidth: .infinity)
+
                 }
                 .buttonStyle(.borderedProminent)
-                
-                Button("Saved Activity") {
-                    showHistory = true
+
+                NavigationLink {
+
+                    RunHistoryView()
+
+                } label: {
+
+                    Label("Previous Runs", systemImage: "clock.arrow.circlepath")
+                        .frame(maxWidth: .infinity)
+
                 }
                 .buttonStyle(.bordered)
 
             }
             .padding()
-            .navigationDestination(isPresented: $isRunning) {
-                RunningView(locationManager: locationManager)
-            }
-            
-            .navigationDestination(isPresented: $showHistory) {
-                RunHistoryView()
-            }
         }
     }
 }
+
 #Preview {
     ContentView()
 }

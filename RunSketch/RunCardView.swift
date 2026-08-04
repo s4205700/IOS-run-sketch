@@ -26,7 +26,9 @@ struct RunCardView: View {
                 .fontWeight(.bold)
             
             HStack {
-                Text("\(Int(run.elapsedTime / 60)) min")
+                Text(
+                    Formatters.formatElapsedTime(run.elapsedTime)
+                )
                 
                 Spacer()
                 
