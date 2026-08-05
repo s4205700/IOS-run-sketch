@@ -17,12 +17,14 @@ class RunModel {
         distance: Double,
         elapsedTime: Double,
         pace: Double,
+        coordinates: [Coordinate]
     ) {
         self.startTime = startTime
         self.endTime = endTime
         self.distance = distance
         self.elapsedTime = elapsedTime
         self.pace = pace
+        self.coordinates = coordinates
     }
 }//
 //  RunModel.swift
