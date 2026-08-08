@@ -1,5 +1,5 @@
-#RunSketch
-RunSketch is a simple iOS application that records a user's running route using GPS and redraws it on a map.
+#HOPPA
+HOPPA is a simple iOS application that records a user's running route using GPS and redraws it on a map.
 
 #PrimaryPrototype
 My goal for the primary MVP and it's features are:
@@ -9,7 +9,9 @@ My goal for the primary MVP and it's features are:
 - Draw the completed route on a map
 - Save previous runs locally
 
-Future features such as pace tracking, milestone, fatigue predictions, split average paces, elevation gain and other complex metrics will be integrated upon successful completion and validation of MVP
+Future features such as pace tracking, milestone, fatigue predictions, split average paces, elevation gain and other complex metrics will be integrated upon successful completion and validation of MVP.
+
+Cool Ideas - Building an app at the dual interests of running and social networking, social networking for runners, co - working sessions after the run, user profiles indicating their current pace to perform suitable running partner matchups etc. 
 
 #LearningOutcomes
 This is my first project and it involves learning real world software development spanning across the following concepts:
